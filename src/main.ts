@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('Travel project APIs')
     .setDescription('APIs for Travel project')
     .setVersion('1.0')
+    .addApiKey({ type: 'apiKey', name: 'api_key', in: 'header' })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
