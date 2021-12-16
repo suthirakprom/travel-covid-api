@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CovidService {
-  getCovidAll(): Array<any> {
+  async getCovidAll(): Promise<any | undefined> {
     var axios = require('axios').default;
 
     var options = {
@@ -14,16 +14,21 @@ export class CovidService {
       },
     };
 
-    let data = axios
+    const connection = axios
       .request(options)
       .then(function (response) {
-        console.log(response.data);
-        return response.data;
+        const allCovidInfo = response.data
+        // const last_update = allCovidInfo['last_update']
+        // const USA = allCovidInfo['data'][1]
+        // console.log(USA)
+        // console.log(last_update)
+        console.log(allCovidInfo)
+        return allCovidInfo;
       })
       .catch(function (error) {
         console.error(error);
       });
 
-    return data;
+      return connection
   }
 }
