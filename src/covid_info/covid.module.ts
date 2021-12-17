@@ -9,13 +9,11 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(
-      process.env.DATABASE_URL,
-    ),
+    MongooseModule.forRoot(process.env.DATABASE_URL),
     AuthModule,
   ],
   controllers: [CovidController],
-  providers: [CovidService]
+  providers: [CovidService],
 })
 export class CovidModule {
   configure(consumer: MiddlewareConsumer) {

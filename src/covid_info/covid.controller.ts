@@ -8,7 +8,7 @@ export class CovidController {
   constructor(private readonly covidService: CovidService) {}
 
   @Get('/covidAll')
-  async getCovidAll(): Promise<Array<any>> {
+  async getCovidAll(): Promise<any | undefined> {
     return await this.covidService.getCovidAll();
   }
 }

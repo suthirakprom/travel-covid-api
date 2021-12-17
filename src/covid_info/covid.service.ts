@@ -17,18 +17,13 @@ export class CovidService {
     const connection = axios
       .request(options)
       .then(function (response) {
-        const allCovidInfo = response.data
-        // const last_update = allCovidInfo['last_update']
-        // const USA = allCovidInfo['data'][1]
-        // console.log(USA)
-        // console.log(last_update)
-        console.log(allCovidInfo)
+        const allCovidInfo = response.data;
         return allCovidInfo;
       })
       .catch(function (error) {
         console.error(error);
       });
 
-      return connection
+    return connection;
   }
 }
