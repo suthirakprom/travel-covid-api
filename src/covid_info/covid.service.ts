@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 @Injectable()
 export class CovidService {
@@ -21,9 +21,14 @@ export class CovidService {
         return allCovidInfo;
       })
       .catch(function (error) {
-        console.error(error);
+        throw new HttpException(
+          {
+            status: HttpStatus.FORBIDDEN,
+            error: error['response']['data'],
+          },
+          HttpStatus.FORBIDDEN,
+        );
       });
-
     return connection;
   }
 }
