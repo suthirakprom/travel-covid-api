@@ -5,6 +5,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ConfigModule } from '@nestjs/config';
+import { CovidController } from './covid_info/covid.controller';
+import { CovidModule } from './covid_info/covid.module';
+import { CovidService } from './covid_info/covid.service';
+
 
 @Module({
   imports: [
@@ -13,9 +17,10 @@ import { ConfigModule } from '@nestjs/config';
       process.env.DATABASE_URL,
     ),
     AuthModule,
+    CovidModule,
   ],
-  controllers: [AppController],
-  providers: [AppService]
+  controllers: [AppController,CovidController],
+  providers: [AppService,CovidService]
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
