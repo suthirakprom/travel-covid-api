@@ -11,4 +11,9 @@ export class CovidController {
   async getCovidAll(): Promise<any | undefined> {
     return await this.covidService.getCovidAll();
   }
+
+  @Get('/covid/:country')
+  async getCompanyById(@Param('country') country: string): Promise<any> {
+    return await this.covidService.getCovidByCountry(country);
+  }
 }
