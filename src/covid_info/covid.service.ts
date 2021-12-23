@@ -34,10 +34,11 @@ export class CovidService {
 
   async getCovidByCountry(country: string): Promise<any | undefined> {
     var axios = require('axios').default;
+    var countries = require("i18n-iso-countries")
 
     var options = {
       method: 'GET',
-      url: 'https://worldometers.p.rapidapi.com/api/coronavirus/country/' + country,
+      url: 'https://worldometers.p.rapidapi.com/api/coronavirus/country/' + countries.getName(country, "en", {select: "alias"}),
       headers: {
         'x-rapidapi-host': 'worldometers.p.rapidapi.com',
         'x-rapidapi-key': 'b8af34ec5amshf1127a2c70c1af1p1e70efjsn6c8cff007dbb',
