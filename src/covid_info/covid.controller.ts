@@ -12,7 +12,7 @@ export class CovidController {
     return await this.covidService.getCovidAll();
   }
 
-  @Get('/covid/:country')
+  @Get('/covid-info/:country')
   async getCompanyById(@Param('country') country: string): Promise<any> {
     return await this.covidService.getCovidByCountry(country);
   }
