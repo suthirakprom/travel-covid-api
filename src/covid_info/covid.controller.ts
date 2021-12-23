@@ -7,7 +7,7 @@ import { CovidService } from './covid.service';
 export class CovidController {
   constructor(private readonly covidService: CovidService) {}
 
-  @Get('/covidAll')
+  @Get('covid-info')
   async getCovidAll(): Promise<any | undefined> {
     return await this.covidService.getCovidAll();
   }
