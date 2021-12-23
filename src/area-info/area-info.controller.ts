@@ -6,8 +6,9 @@ import { ApiSecurity } from '@nestjs/swagger';
 @Controller('area-info')
 export class AreaInfoController {
   constructor(private readonly areaInfoService: AreaInfoService) {}
-  @Get('/:country')
-  async getAreaInfo(@Param('country') country: string) {
-    return await this.areaInfoService.getArea(country);
+
+  @Get('/:countryCode')
+  async getAreaInfo(@Param('countryCode') countryCode: string) {
+    return await this.areaInfoService.areaRegulation(countryCode);
   }
 }
