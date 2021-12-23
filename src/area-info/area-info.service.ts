@@ -1,14 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { stringify } from 'querystring';
-
-let apiKey = '';
 
 @Injectable()
 export class AreaInfoService {
   constructor(private httpService: HttpService) {}
 
-  async getApiKey() {
+  async getApiKey(): Promise<string> {
     const res = await this.httpService
       .post(
         'https://test.api.amadeus.com/v1/security/oauth2/token',
@@ -24,45 +22,35 @@ export class AreaInfoService {
         },
       )
       .toPromise();
-    apiKey = res.data.access_token;
-  }
-  async getArea(country: string) {
-    console.log(country);
-    try {
-      const res = await this.getAreaInformationData(country);
-      return res;
-    } catch {
-      await this.getApiKey();
-      const res = await this.getAreaInformationData(country);
-      return res;
-    }
+    return res.data.access_token;
   }
 
-  async getAreaInformationData(country: string) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const axios = require('axios').default;
-    const options = {
-      method: 'GET',
-      url: `https://test.api.amadeus.com/v1/duty-of-care/diseases/covid19-area-report?countryCode=${country}`,
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    };
-    const conection = axios
-      .request(options)
-      .then(function (response) {
-        const areaInfo = response.data;
-        return areaInfo;
-      })
-      .catch(function (error) {
-        throw new HttpException(
+  async areaRegulation(countryCode: string) {
+    const apiKey = await this.getApiKey();
+    countryCode = countryCode.toUpperCase();
+    try {
+      const areaInfo = await this.httpService
+        .get(
+          `https://test.api.amadeus.com/v1/duty-of-care/diseases/covid19-area-report?countryCode=${countryCode}`,
           {
-            status: HttpStatus.FORBIDDEN,
-            error: error['response']['data'],
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+            },
           },
-          HttpStatus.FORBIDDEN,
-        );
-      });
-    return conection;
+        )
+        .toPromise();
+      const data = areaInfo.data.data;
+      const response: object = {
+        area: data.area,
+        areaPolicy: data.areaPolicy,
+        transportation: data.areaAccessRestriction.transportation,
+        tracingApplication: data.areaAccessRestriction.tracingApplication,
+        mask: data.areaAccessRestriction.mask,
+      };
+
+      return response;
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 }
