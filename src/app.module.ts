@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CovidController } from './covid_info/covid.controller';
 import { CovidModule } from './covid_info/covid.module';
 import { CovidService } from './covid_info/covid.service';
+import { AirTicketModule } from './air-ticket/air-ticket.module';
 
 
 @Module({
@@ -18,6 +19,7 @@ import { CovidService } from './covid_info/covid.service';
     ),
     AuthModule,
     CovidModule,
+    AirTicketModule,
   ],
   controllers: [AppController,CovidController],
   providers: [AppService,CovidService]
