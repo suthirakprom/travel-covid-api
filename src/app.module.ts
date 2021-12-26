@@ -9,6 +9,7 @@ import { CovidController } from './covid_info/covid.controller';
 import { CovidModule } from './covid_info/covid.module';
 import { CovidService } from './covid_info/covid.service';
 import { EntryRestrictionModule } from './entry-restriction/entry-restriction.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 @Module({
@@ -20,6 +21,7 @@ import { EntryRestrictionModule } from './entry-restriction/entry-restriction.mo
     AuthModule,
     CovidModule,
     EntryRestrictionModule,
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController,CovidController],
   providers: [AppService,CovidService]
