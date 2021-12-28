@@ -8,23 +8,22 @@ import { ConfigModule } from '@nestjs/config';
 import { CovidController } from './covid_info/covid.controller';
 import { CovidModule } from './covid_info/covid.module';
 import { CovidService } from './covid_info/covid.service';
+import { AreaInfoModule } from './area-info/area-info.module';
 import { EntryRestrictionModule } from './entry-restriction/entry-restriction.module';
 import { ScheduleModule } from '@nestjs/schedule';
-
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(
-      process.env.DATABASE_URL,
-    ),
+    MongooseModule.forRoot(process.env.DATABASE_URL),
     AuthModule,
     CovidModule,
+    AreaInfoModule,
     EntryRestrictionModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
   ],
-  controllers: [AppController,CovidController],
-  providers: [AppService,CovidService]
+  controllers: [AppController, CovidController],
+  providers: [AppService, CovidService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
