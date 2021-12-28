@@ -1,35 +1,63 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
+import { AirTicketDto } from './dto/air-ticket.dto';
+const axios = require('axios').default;
+const qs = require('qs');
 
 @Injectable()
 export class AirTicketService {
-  async getAirTicket(): Promise<any> {
-    var axios = require('axios').default;
+  private async getAccessToken(): Promise<any> {
+    const accessOptions = {
+      method: 'POST',
+      url: 'https://test.api.amadeus.com/v1/security/oauth2/token',
+      data: qs.stringify({
+        grant_type: 'client_credentials',
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+      }),
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+    };
 
-    var options = {
+    const token = axios
+      .request(accessOptions)
+      .then((access_response: any) => {
+        return access_response.data['access_token'];
+      })
+      .catch((error: any) => {
+        throw new HttpException(error.response.data, error.response.status);
+      });
+    return token;
+  }
+
+  async getAirTicket(airTicketDto: AirTicketDto): Promise<any> {
+    const token = await this.getAccessToken();
+
+    const options = {
       method: 'GET',
       url: 'https://test.api.amadeus.com/v2/shopping/flight-offers',
       params: {
-        originLocationCode: 'PNH',
-        destinationLocationCode: 'TYO',
-        departureDate: '2021-12-25',
+        originLocationCode: airTicketDto.source,
+        destinationLocationCode: airTicketDto.destination,
+        departureDate: airTicketDto.date,
         adults: 1,
         nonStop: false,
         currencyCode: 'USD',
         max: 250,
       },
       headers: {
-        Authorization: `Bearer MclB76esI77QEV7YfkE8rtYS3fts`,
+        Authorization: `Bearer ${token}`,
       },
     };
 
-    const response = axios
+    const airdata = axios
       .request(options)
-      .then(function (response: any) {
+      .then((response: any) => {
         return response.data;
       })
-      .catch(function (error: any) {
+      .catch((error: any) => {
         throw new HttpException(error.response.data, error.response.status);
       });
-    return response;
+    return airdata;
   }
 }
