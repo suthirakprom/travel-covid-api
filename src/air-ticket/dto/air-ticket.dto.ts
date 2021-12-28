@@ -1,4 +1,4 @@
-import { IsDate, IsDateString, IsNotEmpty, Length } from 'class-validator';
+import { IsDateString, IsNotEmpty, Length } from 'class-validator';
 
 export class AirTicketDto {
   @IsNotEmpty()
