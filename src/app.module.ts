@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CovidController } from './covid_info/covid.controller';
 import { CovidModule } from './covid_info/covid.module';
 import { CovidService } from './covid_info/covid.service';
+import { AirTicketModule } from './air-ticket/air-ticket.module';
 import { AreaInfoModule } from './area-info/area-info.module';
 import { EntryRestrictionModule } from './entry-restriction/entry-restriction.module';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -18,6 +19,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     MongooseModule.forRoot(process.env.DATABASE_URL),
     AuthModule,
     CovidModule,
+    AirTicketModule,
     AreaInfoModule,
     EntryRestrictionModule,
     ScheduleModule.forRoot(),
