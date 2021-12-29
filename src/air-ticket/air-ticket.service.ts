@@ -60,4 +60,52 @@ export class AirTicketService {
       });
     return airdata;
   }
+
+  async searchAirTicket(airTicketDto: AirTicketDto): Promise<any> {
+    const token = await this.getAccessToken();
+
+    const options = {
+      method: 'GET',
+      url: 'https://test.api.amadeus.com/v2/shopping/flight-offers',
+      params: {
+        originLocationCode: airTicketDto.source,
+        destinationLocationCode: airTicketDto.destination,
+        departureDate: airTicketDto.date,
+        adults: 1,
+        nonStop: false,
+        currencyCode: 'USD',
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const results = [];
+
+    const respose = axios
+      .request(options)
+      .then(function (res: any) {
+        const data = res.data['data'];
+        data.forEach((response) => {
+          const itineraries = response['itineraries'][0];
+          const firstSegments = itineraries['segments'][0];
+          const lastSegments =
+            itineraries['segments'][itineraries['segments'].length - 1];
+          const departure = firstSegments['departure']['at'];
+          const arrival = lastSegments['arrival']['at'];
+          const airTicketData = {
+            departureTime: departure,
+            arrivalTime: arrival,
+            price: response['price']['grandTotal'],
+            isOneWay: response['oneWay'],
+          };
+          results.push(airTicketData);
+        });
+        return results;
+      })
+      .catch(function (error: any) {
+        throw new HttpException(error.response.data, error.response.status);
+      });
+    return respose;
+  }
 }
