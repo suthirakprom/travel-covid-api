@@ -1,19 +1,73 @@
-import { IsDateString, IsNotEmpty, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class AirTicketDto {
   @IsNotEmpty()
   @Length(3, 3, {
     message: 'source must be equal to 3 characters',
   })
-  source: string;
+  originLocationCode: string;
 
   @IsNotEmpty()
   @Length(3, 3, {
     message: 'destination must be equal to 3 characters',
   })
-  destination: string;
+  destinationLocationCode: string;
 
   @IsNotEmpty()
   @IsDateString()
-  date: string;
+  departureDate: string;
+
+  @IsNotEmpty()
+  @IsInt()
+  adults: number = 1;
+
+  @IsOptional()
+  @IsDateString()
+  returnDate: string;
+
+  @IsOptional()
+  @IsInt()
+  children: string;
+
+  @IsOptional()
+  @IsInt()
+  infants: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['ECONOMY', 'PREMIUM_ECONOMY', 'BUSINESS', 'FIRST'])
+  travelClass: string;
+
+  @IsOptional()
+  @IsString()
+  includedAirlineCodes: string;
+
+  @IsOptional()
+  @IsString()
+  excludedAirlineCodes: string;
+
+  @IsOptional()
+  @IsBoolean()
+  nonStop: boolean = false;
+
+  @IsOptional()
+  @IsString()
+  currencyCode: string = 'USD';
+
+  @IsOptional()
+  @IsInt()
+  maxPrice: number;
+
+  @IsOptional()
+  @IsInt()
+  max: number = 250;
 }
