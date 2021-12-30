@@ -6,15 +6,25 @@ import { query } from 'express';
 @ApiSecurity('api_key', ['api_key'])
 @Controller('entry-restriction')
 export class EntryRestrictionController {
-  constructor(private readonly entryRestrictionService: EntryRestrictionService) {}
+  constructor(
+    private readonly entryRestrictionService: EntryRestrictionService,
+  ) {}
 
   @Get('/:country')
-  async getEntryRestrictionByCountry(@Param('country') country: string, @Query('from') source: string) {
-    return await this.entryRestrictionService.getEntryRestrictionByCountry(country, source);
+  async getEntryRestrictionByCountry(
+    @Param('country') country: string,
+    @Query('from') source: string,
+    @Query('vaccinated') vaccinated: boolean,
+  ) {
+    return await this.entryRestrictionService.getEntryRestrictionByCountry(
+      country,
+      source,
+      vaccinated,
+    );
   }
 
   @Get('/')
   async getEntryRestriction() {
-    return await this.entryRestrictionService.getEntryRestriction()
+    return await this.entryRestrictionService.getEntryRestriction();
   }
 }

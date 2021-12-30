@@ -11,7 +11,11 @@ export class EntryRestrictionService {
     @InjectModel(Country.name) private countryModel: Model<CountryDocument>,
   ) {}
 
-  async getEntryRestrictionByCountry(country: string, source: string) {
+  async getEntryRestrictionByCountry(
+    country: string,
+    source: string,
+    vaccinated: boolean,
+  ) {
     country = country.toUpperCase();
     source = source.toUpperCase();
     const data: any = await this.countryModel.findOne({
@@ -20,7 +24,10 @@ export class EntryRestrictionService {
     let destinationData;
     try {
       data.destinations.forEach(async (destination) => {
-        if (destination.from == source) {
+        if (
+          destination.departure_iso == source &&
+          String(destination.is_vaccinated) == String(vaccinated)
+        ) {
           let today = new Date();
           let date =
             today.getFullYear() +
@@ -36,6 +43,7 @@ export class EntryRestrictionService {
             destinationData = await this.getEntryRestrictionFromCanITravel(
               country,
               source,
+              vaccinated,
             );
           } else {
             destinationData = destination;
@@ -46,6 +54,7 @@ export class EntryRestrictionService {
         destinationData = await this.getEntryRestrictionFromCanITravel(
           country,
           source,
+          vaccinated,
         );
       }
       data.destinations = undefined;
@@ -53,21 +62,25 @@ export class EntryRestrictionService {
       destinationData = await this.getEntryRestrictionFromCanITravel(
         country,
         source,
+        vaccinated,
       );
     }
     let newData = {
-      country: data.destination_name,
-      iso: data.destination_iso,
-      travel_status: data.travel_status,
-      destination: destinationData,
+      destination_name: data.destination_name,
+      destination_iso: data.destination_iso,
+      ...destinationData,
     };
     return newData;
   }
 
-  async getEntryRestrictionFromCanITravel(country: string, source: string) {
+  async getEntryRestrictionFromCanITravel(
+    country: string,
+    source: string,
+    vaccinated: boolean,
+  ) {
     const destination = await this.httpService
       .get(
-        `https://api.canitravel.net/api/v1/countries/${country}?from=${source}&passport=${source}`,
+        `https://api.canitravel.net/api/v1/countries/${country}?from=${source}&passport=${source}&vaccinated=${vaccinated}`,
         {
           headers: {
             Authorization: `Bearer ${process.env.CANITRAVEL_API_KEY}`,
@@ -83,8 +96,7 @@ export class EntryRestrictionService {
       '-' +
       today.getDate();
     let data = {
-      from: source,
-      status: destination.data.data.travel_status.result_text,
+      ...destination.data.data.travel_status,
       date: date,
     };
     await this.countryModel.findOneAndUpdate(
