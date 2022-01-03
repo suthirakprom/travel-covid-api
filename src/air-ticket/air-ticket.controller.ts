@@ -26,8 +26,8 @@ export class AirTicketController {
     return await this.airTicketService.getAirTicket(airTicketDto);
   }
 
-  @Post('search-air-ticket')
-  async searchAirTicket(@Body() airTicketDto: AirTicketDto): Promise<any> {
-    return await this.airTicketService.searchAirTicket(airTicketDto);
-  }
+  // @Post('search-air-ticket')
+  // async searchAirTicket(@Body() airTicketDto: AirTicketDto): Promise<any> {
+  //   return await this.airTicketService.searchAirTicket(airTicketDto);
+  // }
 }
