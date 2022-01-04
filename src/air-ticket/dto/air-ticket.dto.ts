@@ -9,20 +9,25 @@ import {
   Length,
 } from 'class-validator';
 
+import { ApiProperty } from '@nestjs/swagger';
+
 export class AirTicketDto {
   @IsNotEmpty()
+  @ApiProperty()
   @Length(3, 3, {
     message: 'source must be equal to 3 characters',
   })
   originLocationCode: string;
 
   @IsNotEmpty()
+  @ApiProperty()
   @Length(3, 3, {
     message: 'destination must be equal to 3 characters',
   })
   destinationLocationCode: string;
 
   @IsNotEmpty()
+  @ApiProperty()
   @IsDateString()
   departureDate: string;
 
