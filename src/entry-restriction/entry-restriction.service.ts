@@ -19,15 +19,13 @@ export class EntryRestrictionService {
     country = country.toUpperCase();
     source = source.toUpperCase();
     const data: any = await this.countryModel.findOne({
-      destination_iso: country,
+      iso: country,
+      vaccinated: vaccinated,
     });
     let destinationData;
     try {
       data.destinations.forEach(async (destination) => {
-        if (
-          destination.departure_iso == source &&
-          String(destination.is_vaccinated) == String(vaccinated)
-        ) {
+        if (destination.departure_iso == source) {
           let today = new Date();
           let date =
             today.getFullYear() +
@@ -40,6 +38,12 @@ export class EntryRestrictionService {
           let differences =
             (newDate.getTime() - oldDate.getTime()) / (1000 * 3600 * 24);
           if (differences >= 14) {
+            await this.countryModel.updateOne(
+              { _id: data._id },
+              {
+                $pullAll: { destinations: [destination] },
+              },
+            );
             destinationData = await this.getEntryRestrictionFromCanITravel(
               country,
               source,
@@ -57,7 +61,6 @@ export class EntryRestrictionService {
           vaccinated,
         );
       }
-      data.destinations = undefined;
     } catch {
       destinationData = await this.getEntryRestrictionFromCanITravel(
         country,
@@ -66,8 +69,8 @@ export class EntryRestrictionService {
       );
     }
     let newData = {
-      destination_name: data.destination_name,
-      destination_iso: data.destination_iso,
+      country: data.country,
+      iso: data.iso,
       ...destinationData,
     };
     return newData;
@@ -100,7 +103,7 @@ export class EntryRestrictionService {
       date: date,
     };
     await this.countryModel.findOneAndUpdate(
-      { destination_iso: country },
+      { iso: country, vaccinated: vaccinated },
       {
         $addToSet: {
           destinations: data,
@@ -110,14 +113,16 @@ export class EntryRestrictionService {
     return data;
   }
 
-  async getEntryRestriction() {
-    const countries: any = await this.countryModel.find();
+  async getEntryRestriction(vaccinated) {
+    const countries: any = await this.countryModel.find({
+      vaccinated: vaccinated,
+    });
     const newCountries = [];
     countries.forEach((country) => {
       newCountries.push({
-        country: country.destination_name,
-        iso: country.destination_iso,
-        status: country.travel_status.result_text,
+        country: country.country,
+        iso: country.iso,
+        status: country.status,
       });
     });
     return newCountries;

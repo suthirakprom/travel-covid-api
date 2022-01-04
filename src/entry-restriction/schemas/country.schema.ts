@@ -6,13 +6,16 @@ export type CountryDocument = Country & Document;
 @Schema()
 export class Country {
   @Prop()
-  destination_name: string;
+  country: string;
 
   @Prop()
-  destination_iso: string;
+  iso: string;
 
-  @Prop({ type: Object })
-  travel_status: Object;
+  @Prop()
+  status: string;
+
+  @Prop()
+  vaccinated: boolean;
 
   @Prop({ type: Object })
   destinations: Array<any>;
