@@ -24,7 +24,9 @@ export class EntryRestrictionController {
   }
 
   @Get('/')
-  async getEntryRestriction() {
-    return await this.entryRestrictionService.getEntryRestriction();
+  async getEntryRestriction(
+    @Query('vaccinated') vaccinated: boolean,
+  ) {
+    return await this.entryRestrictionService.getEntryRestriction(vaccinated);
   }
 }
