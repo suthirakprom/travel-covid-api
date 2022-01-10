@@ -70,4 +70,45 @@ export class CovidService {
       });
     return connection;
   }
+
+
+
+  async getCovidHistory(country: string,lastdays:string):Promise<any>{
+  
+    var axios = require('axios').default;
+    var countries = require("i18n-iso-countries")
+    var nameCode = require('../../country_code.json')
+
+    var cname;
+    if (country.length > 2){
+      cname = nameCode[countries.alpha3ToAlpha2(country.toUpperCase())]
+    } else {
+      cname = nameCode[country.toUpperCase()]
+    }
+        
+
+    var options = {
+      method: 'GET',
+      url: "https://disease.sh/v3/covid-19/historical/"+cname+"?lastdays="+lastdays,
+    };
+
+    const connection = axios
+    .request(options)
+    .then(function (response) {
+      const covidInfoByCountry = response.data;
+      return covidInfoByCountry;
+    })
+    .catch(function (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: error['response']['data'],
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    });
+  return connection;
+
+
+  }
 }
